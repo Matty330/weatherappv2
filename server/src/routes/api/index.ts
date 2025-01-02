@@ -1,13 +1,9 @@
 import { Router } from 'express';
-import htmlRoutes from './htmlRoutes';
-import weatherRoutes from './weatherRoutes';
+import weatherRoutes from './weatherRoutes.js'; // Explicit file extension for ESM compatibility
 
 const router = Router();
 
-// Connect the HTML route
-router.use('/', htmlRoutes);
-
-// Connect the weather API routes
-router.use('/api/weather', weatherRoutes);
+// Connect weather routes
+router.use('/weather', weatherRoutes);
 
 export default router;

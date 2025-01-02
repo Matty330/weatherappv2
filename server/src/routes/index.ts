@@ -1,11 +1,9 @@
-import path from 'path';
 import { Router } from 'express';
+import apiRoutes from './api/index.js'; // Explicitly reference index.js
 
 const router = Router();
 
-// Serve the main index.html file
-router.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../../client/index.html')); 
-});
+// Connect API routes
+router.use('/api', apiRoutes);
 
 export default router;

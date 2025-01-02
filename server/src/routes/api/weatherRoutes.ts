@@ -2,16 +2,19 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
 
 const router = Router();
+const __filename = fileURLToPath(import.meta.url); // Use fileURLToPath to get the current file path
+const __dirname = path.dirname(__filename); // Get the directory name
 const historyFilePath = path.resolve(__dirname, '../../../searchHistory.json');
 
-// Route to get all saved cities from search history
-router.get('/history', (req, res) => {
+// Get all saved cities from search history
+router.get('/history', (_req, res) => {
   fs.readFile(historyFilePath, 'utf8', (err, data) => {
     if (err) {
-      console.error('Error reading search history file:', err);
-      return res.status(500).json({ error: 'Error reading search history file' });
+      console.error('Error reading search history:', err);
+      return res.status(500).json({ error: 'Error reading search history' });
     }
 
     const history = JSON.parse(data || '[]');
@@ -19,18 +22,18 @@ router.get('/history', (req, res) => {
   });
 });
 
-// Route to save a city and return weather data (mocked for now)
+// Save a city and return weather data
 router.post('/', (req, res) => {
   const { city } = req.body;
 
   if (!city) {
-    return res.status(400).json({ error: 'City name is required' });
+    return res.status(400).json({ error: 'City is required' });
   }
 
   fs.readFile(historyFilePath, 'utf8', (err, data) => {
     if (err) {
-      console.error('Error reading search history file:', err);
-      return res.status(500).json({ error: 'Error reading search history file' });
+      console.error('Error reading search history:', err);
+      return res.status(500).json({ error: 'Error reading search history' });
     }
 
     const history = JSON.parse(data || '[]');
@@ -39,11 +42,10 @@ router.post('/', (req, res) => {
 
     fs.writeFile(historyFilePath, JSON.stringify(history, null, 2), (writeErr) => {
       if (writeErr) {
-        console.error('Error writing to search history file:', writeErr);
-        return res.status(500).json({ error: 'Error saving search history file' });
+        console.error('Error saving search history:', writeErr);
+        return res.status(500).json({ error: 'Error saving search history' });
       }
 
-      // In the future, fetch actual weather data from OpenWeather API
       res.status(201).json(newEntry);
     });
   });
